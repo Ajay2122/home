@@ -1,0 +1,713 @@
+Certainly! Here's the code with additional comments explaining each section:
+
+
+import { useState } from "react";
+const rowStyle = {
+  display: "flex"
+};
+
+const squareStyle = {
+  width: "60px",
+  height: "60px",
+  backgroundColor: "#ddd",
+  margin: "4px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  fontSize: "20px",
+  color: "white",
+  cursor: "pointer"
+};
+
+const boardStyle = {
+  backgroundColor: "#eee",
+  width: "208px",
+  alignItems: "center",
+  justifyContent: "center",
+  display: "flex",
+  flexDirection: "column",
+  border: "3px #eee solid"
+};
+
+const containerStyle = {
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column"
+};
+
+const instructionsStyle = {
+  marginTop: "5px",
+  marginBottom: "5px",
+  fontWeight: "bold",
+  fontSize: "16px"
+};
+
+const buttonStyle = {
+  marginTop: "15px",
+  marginBottom: "16px",
+  width: "80px",
+  height: "40px",
+  backgroundColor: "#8acaca",
+  color: "white",
+  fontSize: "16px",
+  cursor: "pointer"
+};
+
+const Square = ({ val, onClickHapens, userOBox, userXBox }) => {
+  return (
+    <div
+      className="square"
+      style={squareStyle}
+      id={val}
+      onClick={() => onClickHapens(val)}
+    >
+      <span className="square-text">
+        {userOBox[val] === 1 ? "O" : userXBox[val] === 1 ? "X" : ""}
+      </span>
+    </div>
+  );
+};
+
+const Board = () => {
+  const [user, setUser] = useState("O");
+  const [winner, setWinner] = useState(null);
+
+  const [userOBox, setUserOBox] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [userXBox, setUserXBox] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+  const resetHandler = () => {
+    setUserOBox([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    setUserXBox([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    setWinner(null);
+  };
+
+  const checkWinner = () => {
+    if (
+      (userOBox[0] === 1 && userOBox[1] === 1 && userOBox[2] === 1) ||
+      (userOBox[3] === 1 && userOBox[4] === 1 && userOBox[5] === 1) ||
+      (userOBox[6] === 1 && userOBox[7] === 1 && userOBox[8] === 1) ||
+      (userOBox[0] === 1 && userOBox[3] === 1 && userOBox[6] === 1) ||
+      (userOBox[1] === 1 && userOBox[4] === 1 && userOBox[7] === 1) ||
+      (userOBox[2] === 1 && userOBox[5] === 1 && userOBox[8] === 1) ||
+      (userOBox[0] === 1 && userOBox[4] === 1 && userOBox[8] === 1) ||
+      (userOBox[2] === 1 && userOBox[4] === 1 && userOBox[6] === 1)
+    ) {
+      setWinner("O");
+    }
+
+    if (
+      (userXBox[0] === 1 && userXBox[1] === 1 && userXBox[2] === 1) ||
+      (userXBox[3] === 1 && userXBox[4] === 1 && userXBox[5] === 1) ||
+      (userXBox[6] === 1 && userXBox[7] === 1 && userXBox[8] === 1) ||
+      (userXBox[0] === 1 && userXBox[3] === 1 && userXBox[6] === 1) ||
+      (userXBox[1] === 1 && userXBox[4] === 1 && userXBox[7] === 1) ||
+      (userXBox[2] === 1 && userXBox[5] === 1 && userXBox[8] === 1) ||
+      (userXBox[0] === 1 && userXBox[4] === 1 && userXBox[8] === 1) ||
+      (userXBox[2] === 1 && userXBox[4] === 1 && userXBox[6] === 1)
+    ) {
+      setWinner("X");
+    }
+  };
+
+  const clickhandler = (val) => {
+    if (winner) {
+      return;
+    }
+
+    if (user === "O" && userOBox[val] !== 1 && userXBox !== 1) {
+      let newArray = userOBox;
+      newArray[val] = 1;
+
+      setUserOBox(newArray);
+      setUser("X");
+    }
+
+    if (user === "X" && userXBox !== 1 && userOBox !== 1) {
+      let newArray = userXBox;
+      newArray[val] = 1;
+
+      setUserXBox(newArray);
+      setUser("O");
+    }
+
+    checkWinner();
+  };
+
+  return (
+    <div style={containerStyle} className="gameBoard">
+      <div id="statusArea" className="status" style={instructionsStyle}>
+        <span></span>
+      </div>
+      <div id="winnerArea" className="winner" style={instructionsStyle}>
+        Winner:{winner ? <span>{winner}</span> : <div></div>}
+      </div>
+      <button style={buttonStyle} onClick={resetHandler}>
+        Reset
+      </button>
+      <div style={boardStyle}>
+        <div className="board-row" style={rowStyle}>
+          <Square
+            onClickHapens={clickhandler}
+            val={0}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+          <Square
+            onClickHapens={clickhandler}
+            val={1}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+          <Square
+            onClickHapens={clickhandler}
+            val={2}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+        </div>
+        <div className="board-row" style={rowStyle}>
+          <Square
+            onClickHapens={clickhandler}
+            val={3}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+          <Square
+            onClickHapens={clickhandler}
+            val={4}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+          <Square
+            onClickHapens={clickhandler}
+            val={5}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+        </div>
+        <div className="board-row" style={rowStyle}>
+          <Square
+            onClickHapens={clickhandler}
+            val={6}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+          <Square
+            onClickHapens={clickhandler}
+            val={7}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+          <Square
+            onClickHapens={clickhandler}
+            val={8}
+            user={user}
+            userOBox={userOBox}
+            userXBox={userXBox}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board />
+      </div>
+    </div>
+  );
+};
+
+export default App;
+
+//----------------------------------------------------------------//
+
+import { useState } from "react";
+import { createRoot } from "react-dom/client";
+
+const TodoList = ({ todos, remove, setTodos }) => {
+  const finished = (id) => {
+    setTodos((prev) => {
+      const newtodo = prev.map((todo, index) => {
+        if (todo.id === id) {
+          if (!todo.style) {
+            todo.style = { textDecoration: "line-through" };
+          } else {
+            todo.style = false;
+          }
+        }
+        return todo;
+      });
+      return newtodo;
+    });
+  };
+
+  return (
+    <div style={{ backgroundColor: "gray" }}>
+      {todos.map((todo, index) => {
+        return (
+          <div>
+            <p style={todo.style ? todo.style : {}}>
+              {todo.todo}
+              <div>
+                <button
+                  onClick={() => {
+                    remove(todo.id);
+                  }}
+                >
+                  remove
+                </button>
+                <button
+                  onClick={() => {
+                    finished(todo.id);
+                  }}
+                >
+                  finished
+                </button>
+              </div>
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const Todo = () => {
+  const [value, setValue] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setTodos((prev) => {
+      const data = { id: Math.random(), todo: value, style: false };
+      return [...prev, data];
+    });
+    setValue("");
+  };
+
+  const remove = (id) => {
+    const newtodo = todos.filter((todo) => todo.id !== id);
+    setTodos(newtodo);
+  };
+
+  return (
+    <div>
+      <label>Todo-List</label>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      ></input>
+      <button onClick={submitHandler}>Add</button>
+      <TodoList todos={todos} remove={remove} setTodos={setTodos} />
+    </div>
+  );
+};
+
+function App() {
+  return <Todo />;
+}
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(<App />);
+
+
+
+{
+  /* <TypeAnimation
+sequence={["Make a Better Life.", 1000, ""]}
+speed={75} // Must be in range between 1 and 99!
+wrapper="h2"
+repeat={Infinity}
+className="text-3xl sm:text-5xl md:text-6xl font-bold text-[green] mb-3 md:mb-5 lg:mb-8"
+/> */
+}
+
+
+// // import React, { useState } from "react";
+// // import upload from "../../utils/upload";
+// // import "./Register.scss";
+// // import newRequest from "../../utils/newRequest";
+// // import { useNavigate } from "react-router-dom";
+
+// // function Register() {
+// //   const [file, setFile] = useState(null);
+// //   const [user, setUser] = useState({
+// //     username: "",
+// //     email: "",
+// //     password: "",
+// //     img: "",
+// //     country: "",
+// //     isSeller: false,
+// //     desc: "",
+// //     phone: ""
+// //   });
+
+// //   const navigate = useNavigate();
+
+// //   const handleChange = (e) => {
+// //     console.log(e.target.name,"event target")
+// //     setUser((prev) => {
+// //       console.log(e.target.name, "name")
+// //         console.log(e.target.value,"value");
+// //       return { ...prev, [e.target.name]: e.target.value };
+// //     });
+// //   };
+
+// //   const handleSeller = (e) => {
+// //     setUser((prev) => {
+// //       return { ...prev, isSeller: e.target.checked };
+// //     });
+// //   };
+// //   const handleSubmit = async (e) => {
+// //     e.preventDefault();
+
+// //     const url = await upload(file);
+// //     try {
+// //       await newRequest.post("/auth/register", {
+// //         ...user,
+// //         img: url,
+// //       });
+// //       navigate("/")
+// //     } catch (err) {
+// //       console.log(err);
+// //     }
+// //   };
+// //   return (
+// //     <div className="register">
+// //       <form onSubmit={handleSubmit}>
+// //         <div className="left">
+// //           <h1>Create a new account</h1>
+// //           <label htmlFor="">Username</label>
+// //           <input
+// //             name="username"
+// //             type="text"
+// //             placeholder="username"
+// //             onChange={handleChange}
+// //           />
+// //           <label htmlFor="">Email</label>
+// //           <input
+// //             name="email"
+// //             type="email"
+// //             placeholder="email"
+// //             onChange={handleChange}
+// //           />
+// //           <label htmlFor="">Password</label>
+// //           <input name="password" type="password" onChange={handleChange} />
+// //           <label htmlFor="">Profile Picture</label>
+// //           <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+// //           <label htmlFor="">Country</label>
+// //           <input
+// //             name="country"
+// //             type="text"
+// //             placeholder="Usa"
+// //             onChange={handleChange}
+// //           />
+// //           <button type="submit">Register</button>
+// //         </div>
+// //         <div className="right">
+// //           <h1>I want to become a seller</h1>
+// //           <div className="toggle">
+// //             <label htmlFor="">Activate the seller account</label>
+// //             <label className="switch">
+// //               <input type="checkbox" onChange={handleSeller} />
+// //               <span className="slider round"></span>
+// //             </label>
+// //           </div>
+// //           <label htmlFor="">Phone Number</label>
+// //           <input
+// //             name="phone"
+// //             type="text"
+// //             placeholder="+1 234 567 89"
+// //             onChange={handleChange}
+// //           />
+// //           <label htmlFor="">Description</label>
+// //           <textarea
+// //             placeholder="A short description of yourself"
+// //             name="desc"
+// //             id=""
+// //             cols="30"
+// //             rows="10"
+// //             onChange={handleChange}
+// //           ></textarea>
+// //         </div>
+// //       </form>
+// //     </div>
+// //   );
+// // }
+
+// import React, { useState } from "react";
+// import upload from "../../utils/upload";
+// import "./Register.scss";
+// import newRequest from "../../utils/newRequest";
+// import { useNavigate } from "react-router-dom";
+
+// const Register = () => {
+//   const [file, setFile] = useState(null);
+//   const [user, setUser] = useState({
+//     username: "",
+//     email: "",
+//     password: "",
+//     img: "",
+//     country: "",
+//     isSeller: false,
+//     desc: "",
+//     phone: ""
+//   });
+
+//   const navigate = useNavigate();
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setUser((prevUser) => ({ ...prevUser, [name]: value }));
+//   };
+
+//   const handleSeller = (e) => {
+//     const { checked } = e.target;
+//     setUser((prevUser) => ({ ...prevUser, isSeller: checked }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     const url = await upload(file);
+//     try {
+//       await newRequest.post("/auth/register", {
+//         ...user,
+//         img: url,
+//       });
+//       navigate("/");
+//     } catch (err) {
+//       console.log(err,"err");
+//     }
+//   };
+
+//   return (
+//     <div className="register">
+//       <form onSubmit={handleSubmit}>
+//         <div className="left">
+//           <h1>Create a new account</h1>
+//           <label htmlFor="username">Username</label>
+//           <input
+//             name="username"
+//             type="text"
+//             placeholder="username"
+//             value={user.username}
+//             onChange={handleChange}
+//           />
+//           <label htmlFor="email">Email</label>
+//           <input
+//             name="email"
+//             type="email"
+//             placeholder="email"
+//             value={user.email}
+//             onChange={handleChange}
+//           />
+//           <label htmlFor="password">Password</label>
+//           <input
+//             name="password"
+//             type="password"
+//             value={user.password}
+//             onChange={handleChange}
+//           />
+//           <label htmlFor="profilePicture">Profile Picture</label>
+//           <input
+//             type="file"
+//             onChange={(e) => setFile(e.target.files[0])}
+//           />
+//           <label htmlFor="country">Country</label>
+//           <input
+//             name="country"
+//             type="text"
+//             placeholder="USA"
+//             value={user.country}
+//             onChange={handleChange}
+//           />
+//           <button type="submit">Register</button>
+//         </div>
+//         <div className="right">
+//           <h1>I want to become a seller</h1>
+//           <div className="toggle">
+//             <label htmlFor="isSeller">Activate the seller account</label>
+//             <label className="switch">
+//               <input
+//                 name="isSeller"
+//                 type="checkbox"
+//                 checked={user.isSeller}
+//                 onChange={handleSeller}
+//               />
+//               <span className="slider round"></span>
+//             </label>
+//           </div>
+//           <label htmlFor="phone">Phone Number</label>
+//           <input
+//             name="phone"
+//             type="text"
+//             placeholder="+1 234 567 89"
+//             value={user.phone}
+//             onChange={handleChange}
+//           />
+//           <label htmlFor="desc">Description</label>
+//           <textarea
+//             placeholder="A short description of yourself"
+//             name="desc"
+//             id="desc"
+//             cols="30"
+//             rows="10"
+//             value={user.desc}
+//             onChange={handleChange}
+//           ></textarea>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default Register;
+
+import React, { useState } from "react";
+import upload from "../../utils/upload";
+import "./Register.scss";
+import newRequest from "../../utils/newRequest";
+import { useNavigate } from "react-router-dom";
+import { useRegisterUserMutation } from "../../service/userAuthApi";
+
+const Register = () => {
+  const [file, setFile] = useState(null);
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+    img: "",
+    country: "",
+    isSeller: false,
+    desc: "",
+    phone: "",
+  });
+
+  const navigate = useNavigate();
+
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
+  const handleChange = (e) => {
+    // console.log(e);
+    const { name, value } = e.target;
+
+    setUser((prevUser) => ({ ...prevUser, [name]: value }));
+  };
+
+  const handleSeller = (e) => {
+    const { checked } = e.target;
+    setUser((prevUser) => ({ ...prevUser, isSeller: checked }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const url = await upload(file);
+    try {
+      const registerUserData = {
+        ...user,
+        img: url,
+      };
+      await registerUser(registerUserData).unwrap();
+      console.log(registerUserData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div className="register">
+      <form onSubmit={handleSubmit}>
+        <div className="left">
+          <h1>Create a new account</h1>
+          <label htmlFor="username">Username</label>
+          <input
+            name="username"
+            type="text"
+            placeholder="Enter your username"
+            value={user.username}
+            onChange={handleChange}
+          />
+          <label htmlFor="email">Email</label>
+          <input
+            name="email"
+            type="email"
+            placeholder="Enter your email address"
+            value={user.email}
+            onChange={handleChange}
+          />
+          <label htmlFor="password">Password</label>
+          <input
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            value={user.password}
+            onChange={handleChange}
+          />
+          <label htmlFor="profilePicture">Profile Picture</label>
+          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <label htmlFor="country">Country</label>
+          <input
+            name="country"
+            type="text"
+            placeholder="Enter your country"
+            value={user.country}
+            onChange={handleChange}
+          />
+          <button type="submit">Register</button>
+        </div>
+        <div className="right">
+          <h1>I want to become a seller</h1>
+          <div className="toggle">
+            <label htmlFor="isSeller">Activate the seller account</label>
+            <label className="switch">
+              <input
+                name="isSeller"
+                type="checkbox"
+                checked={user.isSeller}
+                onChange={handleSeller}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+          <label htmlFor="phone">Phone Number</label>
+          <input
+            name="phone"
+            type="text"
+            placeholder="+91 "
+            value={user.phone}
+            onChange={handleChange}
+          />
+          <label htmlFor="desc">Description</label>
+          <textarea
+            placeholder="A short description of yourself"
+            name="desc"
+            id="desc"
+            cols="30"
+            rows="10"
+            value={user.desc}
+            onChange={handleChange}
+          ></textarea>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default Register;
+
